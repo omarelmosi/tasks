@@ -5,21 +5,25 @@ let idCounter = 1;
 let alertE = document.querySelector(".alert");
 
 let tasks = [];
-
+if (localStorage.getItem("tasks")) {
+  tasks = JSON.parse(localStorage.getItem("tasks"));
+}
+localGet();
 addBtn.addEventListener("click", function (e) {
   if (input.value === "") {
     displayAlert("يا أستاذ انت مكتبتش حاجه ", "danger");
   } else {
     let value = input.value;
     addToArr(value);
-    input.value = "";
     displayAlert("ابسط يا عم ابسططط", "suc");
   }
+  input.value = "";
 });
 
 itemList.addEventListener("click", function (e) {
   if (e.target.classList.contains("delete")) {
     e.target.parentElement.remove();
+    deleteTask(e.target.parentElement.getAttribute("data-id"));
   }
   if (e.target.classList.contains("check")) {
     if (e.target.checked) {
@@ -28,6 +32,12 @@ itemList.addEventListener("click", function (e) {
       displayAlert("رجعت في كلامك يا فالح", "danger");
     }
     e.target.parentElement.parentElement.parentElement.classList.toggle("done");
+    comSwitch(
+      e.target.parentElement.parentElement.parentElement.getAttribute(
+        "data-id"
+      ),
+      e.target
+    );
   }
 });
 function displayAlert(t, c) {
@@ -47,6 +57,7 @@ function addToArr(text) {
   };
   tasks.push(item);
   addEle();
+  localSet(tasks);
 }
 
 function addEle(ele) {
@@ -61,14 +72,19 @@ function addEle(ele) {
 
     //done btn
     let doneBtn = document.createElement("label");
+    let doneInput = document.createElement("input");
+    doneInput.className = "check";
+    doneInput.setAttribute("id", "check");
+    doneInput.setAttribute("type", "checkbox");
     doneBtn.setAttribute("type", "checkbox");
     doneBtn.className = "checkbox path";
-    doneBtn.innerHTML = `<input class = "check" id="check" type="checkbox">
+    doneBtn.innerHTML = `
         <svg viewBox="0 0 21 21">
             <path
                 d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186">
             </path>
         </svg>`;
+    doneBtn.prepend(doneInput);
     //done btn
 
     // div for text and check
@@ -78,7 +94,6 @@ function addEle(ele) {
     p.textContent = e.title;
     div.append(doneBtn, p);
     // div for text and check
-
     // item add
     i.className = "item";
     i.setAttribute("data-id", e.id);
@@ -86,8 +101,46 @@ function addEle(ele) {
     i.appendChild(deleteBtn);
     if (e.completed) {
       i.className = "item done";
+      doneInput.checked = true;
     }
+
     itemList.appendChild(i);
     // item add
   });
+}
+
+function comSwitch(taskId, check) {
+  for (i of tasks) {
+    if (i.id == taskId) {
+      console.log(i);
+      if (i.completed === false) {
+        i.completed = true;
+      } else {
+        i.completed = false;
+      }
+    }
+  }
+}
+
+function check(result) {
+  if (result === true) {
+  }
+}
+
+function localSet(list) {
+  localStorage.setItem("tasks", JSON.stringify(list));
+}
+
+function localGet() {
+  let data = JSON.parse(localStorage.getItem("tasks"));
+  if (data) {
+    addEle(tasks);
+  }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(function (e) {
+    return e.id != id;
+  });
+  localSet(tasks);
 }
