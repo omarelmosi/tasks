@@ -46,7 +46,7 @@ function addToArr(text) {
     completed: false,
   };
   tasks.push(item);
-  addEle(item);
+  addEle();
 }
 
 function addEle(ele) {
@@ -75,16 +75,16 @@ function addEle(ele) {
     let div = document.createElement("div");
     div.classList.add("con");
     let p = document.createElement("p");
-    p.textContent = ele.title;
+    p.textContent = e.title;
     div.append(doneBtn, p);
     // div for text and check
 
     // item add
     i.className = "item";
-    i.setAttribute("data-id", ele.id);
+    i.setAttribute("data-id", e.id);
     i.appendChild(div);
     i.appendChild(deleteBtn);
-    if (ele.completed) {
+    if (e.completed) {
       i.className = "item done";
     }
     itemList.appendChild(i);
