@@ -171,3 +171,23 @@
 .item p {
     margin-bottom: 5px;
 }
+
+.btn-con {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    display: none;
+}
+
+.btn-con button {
+    all: unset;
+    background-color: #1bc4b4;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.show {
+    display: flex;
+}
