@@ -3,39 +3,33 @@ let addBtn = document.querySelector(".add");
 let itemList = document.querySelector(".item-list");
 let idCounter = 1;
 let alertE = document.querySelector(".alert");
-// let clearBtn = document.querySelector(".delete");
+
+let tasks = [];
+
 addBtn.addEventListener("click", function (e) {
   if (input.value === "") {
     displayAlert("يا أستاذ انت مكتبتش حاجه ", "danger");
   } else {
-    let deletBtn = document.createElement("button");
-    deletBtn.classList.add("delete");
-    deletBtn.textContent = "Delete";
-
-    let item = document.createElement("li");
-    let task = document.createElement("p");
-    item.classList.add("item");
-    item.setAttribute("id", `item ${idCounter++}`);
-    item.appendChild(task);
-    item.appendChild(deletBtn);
-
-    let valueInput = input.value;
-    task.textContent = valueInput;
-    itemList.appendChild(item);
+    let value = input.value;
+    addToArr(value);
     input.value = "";
     displayAlert("ابسط يا عم ابسططط", "suc");
-
-    deletBtn.addEventListener("click", function (e) {
-      let removeItem = document.getElementById(
-        e.currentTarget.parentElement.getAttribute("id")
-      );
-      displayAlert("اتمسحت خلاص", "suc");
-
-      itemList.removeChild(item);
-    });
   }
 });
 
+itemList.addEventListener("click", function (e) {
+  if (e.target.classList.contains("delete")) {
+    e.target.parentElement.remove();
+  }
+  if (e.target.classList.contains("check")) {
+    if (e.target.checked) {
+      displayAlert("يا سلااام التاسك خلص", "suc");
+    } else {
+      displayAlert("رجعت في كلامك يا فالح", "danger");
+    }
+    e.target.parentElement.parentElement.parentElement.classList.toggle("done");
+  }
+});
 function displayAlert(t, c) {
   alertE.classList.add(`alert-${c}`);
   alertE.textContent = t;
@@ -43,4 +37,57 @@ function displayAlert(t, c) {
     alertE.textContent = "";
     alertE.classList.remove(`alert-${c}`);
   }, 1000);
+}
+
+function addToArr(text) {
+  const item = {
+    id: Date.now(),
+    title: text,
+    completed: false,
+  };
+  tasks.push(item);
+  addEle(item);
+}
+
+function addEle(ele) {
+  itemList.innerHTML = "";
+  tasks.forEach(function (e) {
+    let i = document.createElement("li");
+    // btn delete
+    let deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.classList.add("delete");
+    // btn delete
+
+    //done btn
+    let doneBtn = document.createElement("label");
+    doneBtn.setAttribute("type", "checkbox");
+    doneBtn.className = "checkbox path";
+    doneBtn.innerHTML = `<input class = "check" id="check" type="checkbox">
+        <svg viewBox="0 0 21 21">
+            <path
+                d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186">
+            </path>
+        </svg>`;
+    //done btn
+
+    // div for text and check
+    let div = document.createElement("div");
+    div.classList.add("con");
+    let p = document.createElement("p");
+    p.textContent = ele.title;
+    div.append(doneBtn, p);
+    // div for text and check
+
+    // item add
+    i.className = "item";
+    i.setAttribute("data-id", ele.id);
+    i.appendChild(div);
+    i.appendChild(deleteBtn);
+    if (ele.completed) {
+      i.className = "item done";
+    }
+    itemList.appendChild(i);
+    // item add
+  });
 }
