@@ -3,7 +3,9 @@ let addBtn = document.querySelector(".add");
 let itemList = document.querySelector(".item-list");
 let idCounter = 1;
 let alertE = document.querySelector(".alert");
-
+let clearAll = document.querySelector(".clear-all");
+let clearDone = document.querySelector(".clear-done");
+let btnDiv = document.querySelector(".btn-con");
 let tasks = [];
 if (localStorage.getItem("tasks")) {
   tasks = JSON.parse(localStorage.getItem("tasks"));
@@ -24,6 +26,7 @@ itemList.addEventListener("click", function (e) {
   if (e.target.classList.contains("delete")) {
     e.target.parentElement.remove();
     deleteTask(e.target.parentElement.getAttribute("data-id"));
+    checkClear();
   }
   if (e.target.classList.contains("check")) {
     if (e.target.checked) {
@@ -38,6 +41,23 @@ itemList.addEventListener("click", function (e) {
       ),
       e.target
     );
+  }
+});
+
+btnDiv.addEventListener("click", function (e) {
+  if (e.target.classList.contains("clear-all")) {
+    itemList.innerHTML = "";
+    tasks = [];
+    localSet(tasks);
+    checkClear();
+  }
+  if (e.target.classList.contains("clear-done")) {
+    tasks = tasks.filter(function (e) {
+      return e.completed !== true;
+    });
+    addEle(tasks);
+    localSet(tasks);
+    checkClear();
   }
 });
 function displayAlert(t, c) {
@@ -106,6 +126,7 @@ function addEle(ele) {
 
     itemList.appendChild(i);
     // item add
+    checkClear();
   });
 }
 
@@ -145,4 +166,11 @@ function deleteTask(id) {
     return e.id != id;
   });
   localSet(tasks);
+}
+function checkClear() {
+  if (tasks.length > 0) {
+    btnDiv.classList.add("show");
+  } else {
+    btnDiv.classList.remove("show");
+  }
 }
