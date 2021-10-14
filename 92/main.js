@@ -115,8 +115,10 @@ function comSwitch(taskId, check) {
       console.log(i);
       if (i.completed === false) {
         i.completed = true;
+        localSet(tasks);
       } else {
         i.completed = false;
+        localSet(tasks);
       }
     }
   }
